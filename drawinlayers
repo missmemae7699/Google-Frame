@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Frames - Draw in Layers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        :root {
+            --google-blue: #1a73e8;
+            --google-bg: #f8f9fa;
+            --google-border: #dadce0;
+            --toolbar-height: 40px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Roboto', sans-serif; background-color: #f1f3f4; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* GOOGLE DRAWINGS STYLE HEADER */
+        header {
+            height: 60px; background: #fff; border-bottom: 1px solid var(--google-border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .doc-icon { color: var(--google-blue); font-size: 28px; }
+        .doc-details { display: flex; flex-direction: column; }
+        .doc-title { font-family: 'Google Sans'; font-size: 18px; font-weight: 500; border: none; outline: none; }
+        .menu-bar { display: flex; gap: 12px; font-size: 13px; color: #3c4043; margin-top: 2px; }
+        .menu-item { cursor: pointer; }
+        .menu-item:hover { text-decoration: underline; }
+
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .btn-save {
+            background: var(--google-blue); color: #fff; border: none; padding: 8px 18px;
+            border-radius: 4px; font-weight: 500; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+        }
+        .btn-save:hover { background: #1557b0; }
+
+        /* GOOGLE DRAWINGS TOOLBAR */
+        .toolbar {
+            height: var(--toolbar-height); background: #fff; border-bottom: 1px solid var(--google-border);
+            display: flex; align-items: center; padding: 0 12px; gap: 8px;
+        }
+        .tool-btn {
+            background: none; border: none; padding: 6px; border-radius: 4px; cursor: pointer; color: #5f6368; display: flex; align-items: center;
+        }
+        .tool-btn.active, .tool-btn:hover { background: #e8f0fe; color: var(--google-blue); }
+        .separator { width: 1px; height: 20px; background: var(--google-border); margin: 0 4px; }
+        .tool-label { font-size: 12px; color: #5f6368; margin-right: 4px; }
+
+        /* CANVAS AREA (CHECKERBOARD PNG BACKGROUND) */
+        .workspace { flex: 1; display: flex; flex-direction: column; position: relative; overflow: auto; align-items: center; justify-content: center; padding: 20px; }
+        
+        /* 8.5 x 11 INCH RATIO CANVAS CONTAINER (TRANSPARENT PNG GRID) */
+        .canvas-container {
+            width: 612px; height: 792px; /* 8.5 x 11 ratio at 72dpi scale */
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background-image: linear-gradient(45deg, #e0e0e0 25%, transparent 25%), linear-gradient(-45deg, #e0e0e0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e0e0e0 75%), linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            background-color: #fff;
+        }
+
+        /* STACKED LAYER CANVASES */
+        .canvas-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+        }
+        .canvas-layer.active-layer { pointer-events: auto; cursor: crosshair; }
+
+        /* BOTTOM LAYER MANAGER BAR (PHOTOSHOP STYLE INSIDE GOOGLE WORKSPACE) */
+        .layer-bar {
+            height: 70px; background: #fff; border-top: 1px solid var(--google-border);
+            display: flex; align-items: center; padding: 0 16px; justify-content: space-between; z-index: 10;
+        }
+        .layer-tabs { display: flex; gap: 8px; align-items: center; overflow-x: auto; flex: 1; }
+        .layer-tab {
+            border: 1px solid var(--google-border); border-radius: 6px; padding: 6px 12px; background: #f8f9fa;
+            display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 500; min-width: 140px; justify-content: space-between;
+        }
+        .layer-tab.active { border-color: var(--google-blue); background: #e8f0fe; color: var(--google-blue); }
+        .btn-add-layer {
+            background: #fff; border: 1px dashed var(--google-blue); color: var(--google-blue);
+            padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; display: flex; align-items: center; gap: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP MENU & SAVE BAR -->
+    <header>
+        <div class="header-left">
+            <a href="home.html" class="material-icons-outlined doc-icon" style="text-decoration: none;">arrow_back</a>
+            <div class="doc-details">
+                <input type="text" class="doc-title" value="Untitled Drawing - Layer Project">
+                <div class="menu-bar">
+                    <span class="menu-item">File</span>
+                    <span class="menu-item">Edit</span>
+                    <span class="menu-item">View</span>
+                    <span class="menu-item">Insert</span>
+                    <span class="menu-item">Format</span>
+                    <span class="menu-item">Layer</span>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="btn-save" onclick="savePNG()">
+                <span class="material-icons-outlined">cloud_upload</span> Save to Drive
+            </button>
+        </div>
+    </header>
+
+    <!-- DRAWING TOOLBAR -->
+    <div class="toolbar">
+        <button class="tool-btn active" id="tool-pen" onclick="setTool('pen')" title="Pencil / Pen">
+            <span class="material-icons-outlined">edit</span>
+        </button>
+        <button class="tool-btn" id="tool-line" onclick="setTool('line')" title="Line Tool">
+            <span class="material-icons-outlined">show_chart</span>
+        </button>
+        <button class="tool-btn" id="tool-shape" onclick="setTool('shape')" title="Rectangle Shape">
+            <span class="material-icons-outlined">crop_square</span>
+        </button>
+        <button class="tool-btn" id="tool-eraser" onclick="setTool('eraser')" title="Eraser">
+            <span class="material-icons-outlined">auto_fix_normal</span>
+        </button>
+
+        <div class="separator"></div>
+
+        <span class="tool-label">Color:</span>
+        <input type="color" id="strokeColor" value="#1a73e8" style="border: none; background: none; cursor: pointer;">
+
+        <div class="separator"></div>
+
+        <span class="tool-label">Size:</span>
+        <input type="range" id="lineWidth" min="1" max="25" value="4">
+    </div>
+
+    <!-- CANVAS WORKSPACE (8.5 x 11 CANVAS WITH CHECKERBOARD PNG BACKGROUND) -->
+    <div class="workspace">
+        <div class="canvas-container" id="canvasContainer">
+            <!-- LAYER CANVASES WILL BE STACKED HERE -->
+        </div>
+    </div>
+
+    <!-- BOTTOM LAYER MANAGER BAR -->
+    <div class="layer-bar">
+        <div class="layer-tabs" id="layerTabs">
+            <!-- DYNAMIC LAYER TABS -->
+        </div>
+        <button class="btn-add-layer" onclick="addLayer()">
+            <span class="material-icons-outlined">add</span> Add Layer
+        </button>
+    </div>
+
+    <script>
+        let currentTool = 'pen';
+        let activeLayerIndex = 0;
+        let layers = [];
+        const container = document.getElementById('canvasContainer');
+        const tabsContainer = document.getElementById('layerTabs');
+
+        // INITIALIZE 2 DEFAULT LAYERS (Background & Line Art)
+        function init() {
+            addLayer("Layer 1: Background");
+            addLayer("Layer 2: Character / Line Art");
+            selectLayer(1);
+        }
+
+        function addLayer(name = null) {
+            const index = layers.length;
+            const layerName = name || `Layer ${index + 1}`;
+
+            // Create Canvas
+            const cvs = document.createElement('canvas');
+            cvs.className = 'canvas-layer';
+            cvs.width = 612;
+            cvs.height = 792;
+            cvs.id = `layer-${index}`;
+            container.appendChild(cvs);
+
+            const ctx = cvs.getContext('2d');
+            layers.push({ canvas: cvs, ctx: ctx, name: layerName });
+
+            renderLayerTabs();
+            selectLayer(index);
+        }
+
+        function selectLayer(index) {
+            activeLayerIndex = index;
+            layers.forEach((layer, i) => {
+                if (i === index) {
+                    layer.canvas.classList.add('active-layer');
+                    attachDrawingEvents(layer.canvas, layer.ctx);
+                } else {
+                    layer.canvas.classList.remove('active-layer');
+                }
+            });
+            renderLayerTabs();
+        }
+
+        function renderLayerTabs() {
+            tabsContainer.innerHTML = '';
+            layers.forEach((layer, i) => {
+                const tab = document.createElement('div');
+                tab.className = `layer-tab ${i === activeLayerIndex ? 'active' : ''}`;
+                tab.onclick = () => selectLayer(i);
+                tab.innerHTML = `
+                    <span class="material-icons-outlined" style="font-size: 16px;">layers</span>
+                    <span>${layer.name}</span>
+                `;
+                tabsContainer.appendChild(tab);
+            });
+        }
+
+        // TOOL DRAWING LOGIC
+        let drawing = false;
+        let startX = 0, startY = 0;
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tool-${tool}`).classList.add('active');
+        }
+
+        function attachDrawingEvents(canvas, ctx) {
+            canvas.onmousedown = (e) => {
+                drawing = true;
+                const rect = canvas.getBoundingClientRect();
+                startX = e.clientX - rect.left;
+                startY = e.clientY - rect.top;
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+            };
+
+            canvas.onmousemove = (e) => {
+                if (!drawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const color = document.getElementById('strokeColor').value;
+                const size = document.getElementById('lineWidth').value;
+
+                ctx.lineWidth = size;
+                ctx.lineCap = 'round';
+
+                if (currentTool === 'pen') {
+                    ctx.strokeStyle = color;
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                } else if (currentTool === 'eraser') {
+                    ctx.clearRect(x - size/2, y - size/2, size, size);
+                }
+            };
+
+            canvas.onmouseup = (e) => {
+                if (!drawing) return;
+                drawing = false;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const color = document.getElementById('strokeColor').value;
+                const size = document.getElementById('lineWidth').value;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = size;
+
+                if (currentTool === 'line') {
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                } else if (currentTool === 'shape') {
+                    ctx.strokeRect(startX, startY, x - startX, y - startY);
+                }
+            };
+        }
+
+        // SAVE PNG MERGING LAYERS
+        function savePNG() {
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = 612;
+            exportCanvas.height = 792;
+            const exportCtx = exportCanvas.getContext('2d');
+
+            // Merge layers sequentially
+            layers.forEach(layer => {
+                exportCtx.drawImage(layer.canvas, 0, 0);
+            });
+
+            const link = document.createElement('a');
+            link.download = 'google-frames-layer-drawing.png';
+            link.href = exportCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
