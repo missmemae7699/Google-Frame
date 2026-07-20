@@ -3,65 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Frames - AI Animation Hub</title>
+    <title>Google Frames - AI Animation Engine</title>
+    <!-- Google Fonts & Material Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     
     <style>
         :root {
             --google-blue: #1a73e8;
+            --google-blue-hover: #1557b0;
             --google-bg: #f8f9fa;
             --google-border: #dadce0;
             --text-dark: #202124;
             --text-muted: #5f6368;
+            --toolbar-height: 40px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Roboto', sans-serif; background-color: var(--google-bg); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--google-bg); color: var(--text-dark); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
+        /* HEADER NAVIGATION */
         header {
-            height: 64px; background: #fff; border-bottom: 1px solid var(--google-border);
-            display: flex; align-items: center; justify-space-between; padding: 0 24px; position: sticky; top: 0; z-index: 100;
+            height: 60px;
+            background: #fff;
+            border-bottom: 1px solid var(--google-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
         }
-        .brand { display: flex; align-items: center; gap: 12px; font-family: 'Google Sans', sans-serif; font-size: 22px; color: var(--text-dark); text-decoration: none; }
-        .brand span.icon { color: var(--google-blue); font-size: 32px; }
-        
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 20px;
+            color: var(--text-dark);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .brand span.icon { color: var(--google-blue); font-size: 30px; }
+
+        /* VIEW SWITCHING NAVIGATION TABS */
+        .nav-tabs { display: flex; gap: 4px; background: #f1f3f4; padding: 4px; border-radius: 8px; }
+        .nav-tab {
+            padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; transition: 0.15s; display: flex; align-items: center; gap: 6px;
+        }
+        .nav-tab.active { background: #fff; color: var(--google-blue); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
         .search-bar {
-            flex: 0 1 720px; background: #f1f3f4; border-radius: 8px; display: flex; align-items: center; padding: 0 16px; height: 48px;
+            flex: 0 1 500px; background: #f1f3f4; border-radius: 8px; display: flex; align-items: center; padding: 0 16px; height: 40px;
         }
-        .search-bar input { border: none; background: transparent; outline: none; width: 100%; margin-left: 12px; font-size: 16px; }
+        .search-bar input { border: none; background: transparent; outline: none; width: 100%; margin-left: 8px; font-size: 14px; }
 
-        .user-actions { display: flex; align-items: center; gap: 16px; }
-        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #e8f0fe; color: var(--google-blue); display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Google Sans'; }
+        .user-actions { display: flex; align-items: center; gap: 12px; }
+        .btn-save {
+            background: var(--google-blue); color: #fff; border: none; padding: 8px 16px;
+            border-radius: 4px; font-weight: 500; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+        }
+        .btn-save:hover { background: var(--google-blue-hover); }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e8f0fe; color: var(--google-blue); display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Google Sans'; }
 
+        /* VIEW CONTROLLERS */
+        .view-page { display: none; flex: 1; flex-direction: column; overflow: hidden; height: calc(100vh - 60px); }
+        .view-page.active-view { display: flex; }
+
+        /* ================= 1. HOME VIEW STYLES ================= */
+        #home-view { overflow-y: auto; }
         main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 32px 24px; }
         .section-title { font-family: 'Google Sans'; font-size: 16px; font-weight: 500; color: var(--text-muted); margin-bottom: 16px; }
 
-        /* REORGANIZED GRID: CARDS ON LEFT, GEMINI ON RIGHT */
         .create-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr) 280px;
-            gap: 16px;
-            margin-bottom: 40px;
+            display: grid; grid-template-columns: repeat(3, 1fr) 280px; gap: 16px; margin-bottom: 40px;
         }
-
-        @media (max-width: 900px) {
-            .create-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 900px) { .create-grid { grid-template-columns: 1fr; } }
 
         .create-card {
             background: #fff; border: 1px solid var(--google-border); border-radius: 8px; padding: 20px 16px;
-            cursor: pointer; transition: transform 0.15s, border-color 0.15s; display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; color: inherit;
+            cursor: pointer; transition: transform 0.15s, border-color 0.15s; display: flex; flex-direction: column; align-items: center; text-align: center; color: inherit; text-decoration: none;
         }
         .create-card:hover { border-color: var(--google-blue); transform: translateY(-2px); }
         .create-card .card-icon { font-size: 40px; color: var(--google-blue); margin-bottom: 12px; }
         .card-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
         .card-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
-        /* RIGHT COLUMN GEMINI CARD */
         .ai-card {
             background: linear-gradient(135deg, #e8f0fe 0%, #f3e8ff 100%); border: 1px solid #c2e7ff;
-            border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-space-between;
+            border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;
         }
         .ai-card-content h3 { font-family: 'Google Sans'; font-size: 15px; color: #1e1b4b; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
         .ai-card-content p { font-size: 12px; color: #4338ca; line-height: 1.4; }
@@ -70,78 +100,349 @@
             font-weight: 500; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; margin-top: 16px;
         }
 
-        /* RECENT PROJECTS */
         .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
         .project-card { background: #fff; border: 1px solid var(--google-border); border-radius: 8px; overflow: hidden; cursor: pointer; }
         .project-thumbnail { height: 140px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
         .project-info { padding: 12px 16px; }
         .project-name { font-size: 14px; font-weight: 500; }
         .project-meta { font-size: 12px; color: var(--text-muted); }
+
+        /* ================= 2. DRAW LAYERS VIEW STYLES ================= */
+        .toolbar {
+            height: var(--toolbar-height); background: #fff; border-bottom: 1px solid var(--google-border);
+            display: flex; align-items: center; padding: 0 12px; gap: 8px;
+        }
+        .tool-btn {
+            background: none; border: none; padding: 6px; border-radius: 4px; cursor: pointer; color: #5f6368; display: flex; align-items: center;
+        }
+        .tool-btn.active, .tool-btn:hover { background: #e8f0fe; color: var(--google-blue); }
+        .separator { width: 1px; height: 20px; background: var(--google-border); margin: 0 4px; }
+        .tool-label { font-size: 12px; color: #5f6368; margin-right: 4px; }
+
+        .workspace { flex: 1; display: flex; position: relative; overflow: auto; align-items: center; justify-content: center; padding: 20px; background: #f1f3f4; }
+        
+        /* 8.5 x 11 INCH RATIO CANVAS CONTAINER */
+        .canvas-container {
+            width: 612px; height: 792px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background-image: linear-gradient(45deg, #e0e0e0 25%, transparent 25%), linear-gradient(-45deg, #e0e0e0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e0e0e0 75%), linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
+            background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; background-color: #fff;
+        }
+
+        .canvas-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .canvas-layer.active-layer { pointer-events: auto; cursor: crosshair; }
+
+        .layer-bar {
+            height: 65px; background: #fff; border-top: 1px solid var(--google-border);
+            display: flex; align-items: center; padding: 0 16px; justify-content: space-between; z-index: 10;
+        }
+        .layer-tabs { display: flex; gap: 8px; align-items: center; overflow-x: auto; flex: 1; }
+        .layer-tab {
+            border: 1px solid var(--google-border); border-radius: 6px; padding: 6px 12px; background: #f8f9fa;
+            display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 500; min-width: 140px; justify-content: space-between;
+        }
+        .layer-tab.active { border-color: var(--google-blue); background: #e8f0fe; color: var(--google-blue); }
+        .btn-add-layer {
+            background: #fff; border: 1px dashed var(--google-blue); color: var(--google-blue);
+            padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; display: flex; align-items: center; gap: 4px;
+        }
     </style>
 </head>
 <body>
 
+    <!-- TOP GLOBAL HEADER -->
     <header>
-        <a href="#" class="brand">
-            <span class="material-icons-outlined icon">animation</span>
-            <span><b>Google</b> Frames</span>
-        </a>
-        <div class="search-bar">
+        <div class="header-left">
+            <div class="brand" onclick="switchView('home')">
+                <span class="material-icons-outlined icon">animation</span>
+                <span><b>Google</b> Frames</span>
+            </div>
+
+            <!-- NAVIGATION VIEW TABS -->
+            <div class="nav-tabs">
+                <div class="nav-tab active" id="tab-home" onclick="switchView('home')">
+                    <span class="material-icons-outlined" style="font-size: 18px;">home</span> Home
+                </div>
+                <div class="nav-tab" id="tab-layers" onclick="switchView('draw-layers')">
+                    <span class="material-icons-outlined" style="font-size: 18px;">layers</span> Draw in Layers
+                </div>
+            </div>
+        </div>
+
+        <div class="search-bar" id="global-search">
             <span class="material-icons-outlined" style="color: var(--text-muted);">search</span>
             <input type="text" placeholder="Search drawings, animations, storyboards...">
         </div>
+
         <div class="user-actions">
+            <button class="btn-save" id="btn-drive-save" style="display: none;" onclick="savePNG()">
+                <span class="material-icons-outlined">cloud_upload</span> Save PNG
+            </button>
             <div class="avatar">S</div>
         </div>
     </header>
 
-    <main>
-        <div class="section-title">Start creating</div>
+    <!-- ================= 1. HOME VIEW PAGE ================= -->
+    <div class="view-page active-view" id="home-view">
+        <main>
+            <div class="section-title">Start creating</div>
 
-        <div class="create-grid">
-            <!-- TAB 1: DRAW IN LAYERS -->
-            <a href="draw-layers.html" class="create-card">
-                <span class="material-icons-outlined card-icon">layers</span>
-                <div class="card-title">Draw in Layers</div>
-                <div class="card-desc">Google Drawings canvas with Photoshop-style multi-layer controls</div>
-            </a>
-
-            <!-- TAB 2: DRAW FRAME BY FRAME -->
-            <a href="#" class="create-card">
-                <span class="material-icons-outlined card-icon">motion_photos_on</span>
-                <div class="card-title">Draw Frame by Frame</div>
-                <div class="card-desc">Short frame-by-frame 2D animation sequences with onion skinning</div>
-            </a>
-
-            <!-- TAB 3: CREATE STORYBOARD -->
-            <a href="#" class="create-card">
-                <span class="material-icons-outlined card-icon">grid_view</span>
-                <div class="card-title">Create Storyboard</div>
-                <div class="card-desc">Collate drawings with scripts, voiceovers, music, and scene layouts</div>
-            </a>
-
-            <!-- RIGHT COLUMN GEMINI ASSISTANT -->
-            <div class="ai-card">
-                <div class="ai-card-content">
-                    <h3><span class="material-icons-outlined" style="color: #4f46e5;">auto_awesome</span> Gemini AI</h3>
-                    <p>Co-write scripts, design character rigs, and generate scene concepts on demand.</p>
+            <div class="create-grid">
+                <!-- TAB 1: DRAW IN LAYERS -->
+                <div class="create-card" onclick="switchView('draw-layers')">
+                    <span class="material-icons-outlined card-icon">layers</span>
+                    <div class="card-title">Draw in Layers</div>
+                    <div class="card-desc">Google Drawings canvas with Photoshop-style multi-layer controls</div>
                 </div>
-                <a href="draw-layers.html" class="btn-ai">
-                    <span class="material-icons-outlined">chat</span> Open Gemini
-                </a>
+
+                <!-- TAB 2: DRAW FRAME BY FRAME -->
+                <div class="create-card">
+                    <span class="material-icons-outlined card-icon">motion_photos_on</span>
+                    <div class="card-title">Draw Frame by Frame</div>
+                    <div class="card-desc">Short frame-by-frame 2D animation sequences with onion skinning</div>
+                </div>
+
+                <!-- TAB 3: CREATE STORYBOARD -->
+                <div class="create-card">
+                    <span class="material-icons-outlined card-icon">grid_view</span>
+                    <div class="card-title">Create Storyboard</div>
+                    <div class="card-desc">Collate drawings with scripts, voiceovers, music, and scene layouts</div>
+                </div>
+
+                <!-- RIGHT COLUMN GEMINI ASSISTANT -->
+                <div class="ai-card">
+                    <div class="ai-card-content">
+                        <h3><span class="material-icons-outlined" style="color: #4f46e5;">auto_awesome</span> Gemini AI</h3>
+                        <p>Co-write scripts, design character rigs, and generate scene concepts on demand.</p>
+                    </div>
+                    <button class="btn-ai" onclick="switchView('draw-layers')">
+                        <span class="material-icons-outlined">chat</span> Open Gemini
+                    </button>
+                </div>
+            </div>
+
+            <div class="section-title">Recent projects</div>
+            <div class="project-grid">
+                <div class="project-card" onclick="switchView('draw-layers')">
+                    <div class="project-thumbnail"><span class="material-icons-outlined" style="font-size: 48px;">layers</span></div>
+                    <div class="project-info">
+                        <div class="project-name">Character Rig Layer Design</div>
+                        <div class="project-meta">8.5x11 PNG • Modified 10 mins ago</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ================= 2. DRAW IN LAYERS VIEW PAGE ================= -->
+    <div class="view-page" id="draw-layers-view">
+        <!-- DRAWING TOOLBAR -->
+        <div class="toolbar">
+            <button class="tool-btn active" id="tool-pen" onclick="setTool('pen')" title="Pencil / Pen">
+                <span class="material-icons-outlined">edit</span>
+            </button>
+            <button class="tool-btn" id="tool-line" onclick="setTool('line')" title="Line Tool">
+                <span class="material-icons-outlined">show_chart</span>
+            </button>
+            <button class="tool-btn" id="tool-shape" onclick="setTool('shape')" title="Rectangle Shape">
+                <span class="material-icons-outlined">crop_square</span>
+            </button>
+            <button class="tool-btn" id="tool-eraser" onclick="setTool('eraser')" title="Eraser">
+                <span class="material-icons-outlined">auto_fix_normal</span>
+            </button>
+
+            <div class="separator"></div>
+
+            <span class="tool-label">Color:</span>
+            <input type="color" id="strokeColor" value="#1a73e8" style="border: none; background: none; cursor: pointer;">
+
+            <div class="separator"></div>
+
+            <span class="tool-label">Size:</span>
+            <input type="range" id="lineWidth" min="1" max="25" value="4">
+        </div>
+
+        <!-- CANVAS WORKSPACE (8.5 x 11 INCH PNG RATIO) -->
+        <div class="workspace">
+            <div class="canvas-container" id="canvasContainer">
+                <!-- LAYER CANVASES INJECTED DYNAMICALLY -->
             </div>
         </div>
 
-        <div class="section-title">Recent projects</div>
-        <div class="project-grid">
-            <div class="project-card" onclick="window.location.href='draw-layers.html'">
-                <div class="project-thumbnail"><span class="material-icons-outlined" style="font-size: 48px;">layers</span></div>
-                <div class="project-info">
-                    <div class="project-name">Character Rig Layer Design</div>
-                    <div class="project-meta">8.5x11 PNG • Modified 10 mins ago</div>
-                </div>
+        <!-- BOTTOM LAYER MANAGER BAR -->
+        <div class="layer-bar">
+            <div class="layer-tabs" id="layerTabs">
+                <!-- DYNAMIC LAYER TABS -->
             </div>
+            <button class="btn-add-layer" onclick="addLayer()">
+                <span class="material-icons-outlined">add</span> Add Layer
+            </button>
         </div>
-    </main>
+    </div>
+
+    <!-- APPLICATION LOGIC -->
+    <script>
+        // VIEW SWITCHING LOGIC
+        function switchView(viewName) {
+            document.querySelectorAll('.view-page').forEach(page => page.classList.remove('active-view'));
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+
+            const saveBtn = document.getElementById('btn-drive-save');
+            const searchBar = document.getElementById('global-search');
+
+            if (viewName === 'home') {
+                document.getElementById('home-view').classList.add('active-view');
+                document.getElementById('tab-home').classList.add('active');
+                saveBtn.style.display = 'none';
+                searchBar.style.display = 'flex';
+            } else if (viewName === 'draw-layers') {
+                document.getElementById('draw-layers-view').classList.add('active-view');
+                document.getElementById('tab-layers').classList.add('active');
+                saveBtn.style.display = 'flex';
+                searchBar.style.display = 'none';
+            }
+        }
+
+        // DRAW IN LAYERS ENGINE
+        let currentTool = 'pen';
+        let activeLayerIndex = 0;
+        let layers = [];
+        const container = document.getElementById('canvasContainer');
+        const tabsContainer = document.getElementById('layerTabs');
+
+        function initLayers() {
+            if (layers.length === 0) {
+                addLayer("Layer 1: Background");
+                addLayer("Layer 2: Line Art");
+                selectLayer(1);
+            }
+        }
+
+        function addLayer(name = null) {
+            const index = layers.length;
+            const layerName = name || `Layer ${index + 1}`;
+
+            const cvs = document.createElement('canvas');
+            cvs.className = 'canvas-layer';
+            cvs.width = 612;
+            cvs.height = 792;
+            cvs.id = `layer-${index}`;
+            container.appendChild(cvs);
+
+            const ctx = cvs.getContext('2d');
+            layers.push({ canvas: cvs, ctx: ctx, name: layerName });
+
+            renderLayerTabs();
+            selectLayer(index);
+        }
+
+        function selectLayer(index) {
+            activeLayerIndex = index;
+            layers.forEach((layer, i) => {
+                if (i === index) {
+                    layer.canvas.classList.add('active-layer');
+                    attachDrawingEvents(layer.canvas, layer.ctx);
+                } else {
+                    layer.canvas.classList.remove('active-layer');
+                }
+            });
+            renderLayerTabs();
+        }
+
+        function renderLayerTabs() {
+            tabsContainer.innerHTML = '';
+            layers.forEach((layer, i) => {
+                const tab = document.createElement('div');
+                tab.className = `layer-tab ${i === activeLayerIndex ? 'active' : ''}`;
+                tab.onclick = () => selectLayer(i);
+                tab.innerHTML = `
+                    <span class="material-icons-outlined" style="font-size: 16px;">layers</span>
+                    <span>${layer.name}</span>
+                `;
+                tabsContainer.appendChild(tab);
+            });
+        }
+
+        // TOOL DRAWING LOGIC
+        let drawing = false;
+        let startX = 0, startY = 0;
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tool-${tool}`).classList.add('active');
+        }
+
+        function attachDrawingEvents(canvas, ctx) {
+            canvas.onmousedown = (e) => {
+                drawing = true;
+                const rect = canvas.getBoundingClientRect();
+                startX = e.clientX - rect.left;
+                startY = e.clientY - rect.top;
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+            };
+
+            canvas.onmousemove = (e) => {
+                if (!drawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const color = document.getElementById('strokeColor').value;
+                const size = document.getElementById('lineWidth').value;
+
+                ctx.lineWidth = size;
+                ctx.lineCap = 'round';
+
+                if (currentTool === 'pen') {
+                    ctx.strokeStyle = color;
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                } else if (currentTool === 'eraser') {
+                    ctx.clearRect(x - size/2, y - size/2, size, size);
+                }
+            };
+
+            canvas.onmouseup = (e) => {
+                if (!drawing) return;
+                drawing = false;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const color = document.getElementById('strokeColor').value;
+                const size = document.getElementById('lineWidth').value;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = size;
+
+                if (currentTool === 'line') {
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                } else if (currentTool === 'shape') {
+                    ctx.strokeRect(startX, startY, x - startX, y - startY);
+                }
+            };
+        }
+
+        // SAVE MERGED LAYERS AS PNG
+        function savePNG() {
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = 612;
+            exportCanvas.height = 792;
+            const exportCtx = exportCanvas.getContext('2d');
+
+            layers.forEach(layer => {
+                exportCtx.drawImage(layer.canvas, 0, 0);
+            });
+
+            const link = document.createElement('a');
+            link.download = 'google-frames-layer-drawing.png';
+            link.href = exportCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // INITIALIZE APP
+        window.onload = initLayers;
+    </script>
 </body>
 </html>
