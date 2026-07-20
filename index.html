@@ -10,7 +10,6 @@
     <style>
         :root {
             --google-blue: #1a73e8;
-            --google-blue-hover: #1557b0;
             --google-bg: #f8f9fa;
             --google-border: #dadce0;
             --text-dark: #202124;
@@ -20,311 +19,129 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Roboto', sans-serif; background-color: var(--google-bg); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; }
 
-        /* TOP NAVIGATION BAR */
         header {
-            height: 64px;
-            background: #fff;
-            border-bottom: 1px solid var(--google-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            height: 64px; background: #fff; border-bottom: 1px solid var(--google-border);
+            display: flex; align-items: center; justify-space-between; padding: 0 24px; position: sticky; top: 0; z-index: 100;
         }
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-family: 'Google Sans', sans-serif;
-            font-size: 22px;
-            color: var(--text-dark);
-            text-decoration: none;
-        }
+        .brand { display: flex; align-items: center; gap: 12px; font-family: 'Google Sans', sans-serif; font-size: 22px; color: var(--text-dark); text-decoration: none; }
         .brand span.icon { color: var(--google-blue); font-size: 32px; }
         
-        /* SEARCH BAR */
         .search-bar {
-            flex: 0 1 720px;
-            background: #f1f3f4;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            height: 48px;
-            transition: background 0.2s, box-shadow 0.2s;
+            flex: 0 1 720px; background: #f1f3f4; border-radius: 8px; display: flex; align-items: center; padding: 0 16px; height: 48px;
         }
-        .search-bar:focus-within {
-            background: #fff;
-            box-shadow: 0 1px 6px rgba(32,33,36,0.28);
-        }
-        .search-bar input {
-            border: none;
-            background: transparent;
-            outline: none;
-            width: 100%;
-            margin-left: 12px;
-            font-size: 16px;
-            color: var(--text-dark);
-        }
+        .search-bar input { border: none; background: transparent; outline: none; width: 100%; margin-left: 12px; font-size: 16px; }
 
         .user-actions { display: flex; align-items: center; gap: 16px; }
-        .avatar {
-            width: 36px; height: 36px; border-radius: 50%; background: #e8f0fe; color: var(--google-blue);
-            display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Google Sans';
-        }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #e8f0fe; color: var(--google-blue); display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Google Sans'; }
 
-        /* MAIN CONTENT AREA */
         main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 32px 24px; }
+        .section-title { font-family: 'Google Sans'; font-size: 16px; font-weight: 500; color: var(--text-muted); margin-bottom: 16px; }
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .section-title { font-family: 'Google Sans'; font-size: 16px; font-weight: 500; color: var(--text-muted); }
-
-        /* CREATE GRID WITH GEMINI BANNER ON THE LEFT */
+        /* REORGANIZED GRID: CARDS ON LEFT, GEMINI ON RIGHT */
         .create-grid {
             display: grid;
-            grid-template-columns: 280px repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr) 280px;
             gap: 16px;
             margin-bottom: 40px;
         }
 
         @media (max-width: 900px) {
-            .create-grid {
-                grid-template-columns: 1fr;
-            }
+            .create-grid { grid-template-columns: 1fr; }
         }
 
-        /* LEFT SIDE AI GEMINI BANNER CARD */
-        .ai-card {
-            background: linear-gradient(135deg, #e8f0fe 0%, #f3e8ff 100%);
-            border: 1px solid #c2e7ff;
-            border-radius: 8px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .ai-card-content h3 {
-            font-family: 'Google Sans';
-            font-size: 16px;
-            color: #1e1b4b;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .ai-card-content p { font-size: 13px; color: #4338ca; line-height: 1.4; }
-        .btn-ai {
-            background: #4f46e5;
-            color: #fff;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 20px;
-            font-weight: 500;
-            font-size: 13px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            text-decoration: none;
-            margin-top: 16px;
-        }
-        .btn-ai:hover { background: #4338ca; }
-
-        /* CREATE OPTION CARDS */
         .create-card {
-            background: #fff;
-            border: 1px solid var(--google-border);
-            border-radius: 8px;
-            padding: 20px 16px;
-            cursor: pointer;
-            transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            text-decoration: none;
-            color: inherit;
+            background: #fff; border: 1px solid var(--google-border); border-radius: 8px; padding: 20px 16px;
+            cursor: pointer; transition: transform 0.15s, border-color 0.15s; display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; color: inherit;
         }
-        .create-card:hover {
-            border-color: var(--google-blue);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .create-card .card-icon {
-            font-size: 40px;
-            color: var(--google-blue);
-            margin-bottom: 12px;
-        }
-        .card-title { font-size: 15px; font-weight: 500; color: var(--text-dark); margin-bottom: 6px; }
+        .create-card:hover { border-color: var(--google-blue); transform: translateY(-2px); }
+        .create-card .card-icon { font-size: 40px; color: var(--google-blue); margin-bottom: 12px; }
+        .card-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
         .card-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
-        /* RECENT PROJECTS SECTION */
-        .projects-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--google-border);
+        /* RIGHT COLUMN GEMINI CARD */
+        .ai-card {
+            background: linear-gradient(135deg, #e8f0fe 0%, #f3e8ff 100%); border: 1px solid #c2e7ff;
+            border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-space-between;
         }
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+        .ai-card-content h3 { font-family: 'Google Sans'; font-size: 15px; color: #1e1b4b; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .ai-card-content p { font-size: 12px; color: #4338ca; line-height: 1.4; }
+        .btn-ai {
+            background: #4f46e5; color: #fff; border: none; padding: 10px 16px; border-radius: 20px;
+            font-weight: 500; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; margin-top: 16px;
         }
-        .project-card {
-            background: #fff;
-            border: 1px solid var(--google-border);
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: box-shadow 0.2s;
-        }
-        .project-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .project-thumbnail {
-            height: 140px;
-            background: #e9ecef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            position: relative;
-        }
-        .project-thumbnail .badge {
-            position: absolute;
-            top: 8px; right: 8px;
-            background: rgba(0,0,0,0.6);
-            color: #fff;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
+
+        /* RECENT PROJECTS */
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .project-card { background: #fff; border: 1px solid var(--google-border); border-radius: 8px; overflow: hidden; cursor: pointer; }
+        .project-thumbnail { height: 140px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
         .project-info { padding: 12px 16px; }
-        .project-name { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
-        .project-meta { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+        .project-name { font-size: 14px; font-weight: 500; }
+        .project-meta { font-size: 12px; color: var(--text-muted); }
     </style>
 </head>
 <body>
 
-    <!-- TOP NAVIGATION -->
     <header>
         <a href="#" class="brand">
             <span class="material-icons-outlined icon">animation</span>
             <span><b>Google</b> Frames</span>
         </a>
-
         <div class="search-bar">
             <span class="material-icons-outlined" style="color: var(--text-muted);">search</span>
-            <input type="text" placeholder="Search drawings, animations, storyboards, or templates...">
+            <input type="text" placeholder="Search drawings, animations, storyboards...">
         </div>
-
         <div class="user-actions">
-            <span class="material-icons-outlined" style="color: var(--text-muted); cursor: pointer;">apps</span>
             <div class="avatar">S</div>
         </div>
     </header>
 
-    <!-- MAIN BODY -->
     <main>
-
-        <div class="section-header">
-            <div class="section-title">Start creating</div>
-        </div>
+        <div class="section-title">Start creating</div>
 
         <div class="create-grid">
-            
-            <!-- LEFT SIDE GEMINI TOOL -->
-            <div class="ai-card">
-                <div class="ai-card-content">
-                    <h3><span class="material-icons-outlined" style="color: #4f46e5;">auto_awesome</span> Gemini Assistant</h3>
-                    <p>Co-write scripts, generate storyboards, or get creative drawing ideas directly inside your workspace.</p>
-                </div>
-                <a href="index.html" class="btn-ai">
-                    <span class="material-icons-outlined">chat</span> Open Gemini Assistant
-                </a>
-            </div>
-
             <!-- TAB 1: DRAW IN LAYERS -->
-            <a href="index.html" class="create-card">
+            <a href="draw-layers.html" class="create-card">
                 <span class="material-icons-outlined card-icon">layers</span>
                 <div class="card-title">Draw in Layers</div>
-                <div class="card-desc">Basic drawing canvas using pen controls and multi-layer management</div>
+                <div class="card-desc">Google Drawings canvas with Photoshop-style multi-layer controls</div>
             </a>
 
             <!-- TAB 2: DRAW FRAME BY FRAME -->
-            <a href="index.html" class="create-card">
+            <a href="#" class="create-card">
                 <span class="material-icons-outlined card-icon">motion_photos_on</span>
                 <div class="card-title">Draw Frame by Frame</div>
-                <div class="card-desc">Create short frame-by-frame 2D animated sequences with onion skinning</div>
+                <div class="card-desc">Short frame-by-frame 2D animation sequences with onion skinning</div>
             </a>
 
             <!-- TAB 3: CREATE STORYBOARD -->
-            <a href="index.html" class="create-card">
+            <a href="#" class="create-card">
                 <span class="material-icons-outlined card-icon">grid_view</span>
                 <div class="card-title">Create Storyboard</div>
-                <div class="card-desc">Collate drawings and generate scripts, audio, music, and background scenes</div>
+                <div class="card-desc">Collate drawings with scripts, voiceovers, music, and scene layouts</div>
             </a>
 
+            <!-- RIGHT COLUMN GEMINI ASSISTANT -->
+            <div class="ai-card">
+                <div class="ai-card-content">
+                    <h3><span class="material-icons-outlined" style="color: #4f46e5;">auto_awesome</span> Gemini AI</h3>
+                    <p>Co-write scripts, design character rigs, and generate scene concepts on demand.</p>
+                </div>
+                <a href="draw-layers.html" class="btn-ai">
+                    <span class="material-icons-outlined">chat</span> Open Gemini
+                </a>
+            </div>
         </div>
 
-        <!-- RECENT PROJECTS -->
-        <div class="projects-header">
-            <div class="section-title">Recent projects</div>
-            <span class="material-icons-outlined" style="color: var(--text-muted); cursor: pointer;">sort</span>
-        </div>
-
+        <div class="section-title">Recent projects</div>
         <div class="project-grid">
-            <div class="project-card" onclick="window.location.href='index.html'">
-                <div class="project-thumbnail">
-                    <span class="material-icons-outlined" style="font-size: 48px;">layers</span>
-                    <span class="badge">Illustration</span>
-                </div>
+            <div class="project-card" onclick="window.location.href='draw-layers.html'">
+                <div class="project-thumbnail"><span class="material-icons-outlined" style="font-size: 48px;">layers</span></div>
                 <div class="project-info">
-                    <div class="project-name">Character Rig & Layers</div>
-                    <div class="project-meta">
-                        <span class="material-icons-outlined" style="font-size: 16px;">schedule</span> Opened 2 hours ago
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card" onclick="window.location.href='index.html'">
-                <div class="project-thumbnail">
-                    <span class="material-icons-outlined" style="font-size: 48px;">motion_photos_on</span>
-                    <span class="badge">6 Frames</span>
-                </div>
-                <div class="project-info">
-                    <div class="project-name">Physics - Bouncing Ball</div>
-                    <div class="project-meta">
-                        <span class="material-icons-outlined" style="font-size: 16px;">schedule</span> Yesterday
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card" onclick="window.location.href='index.html'">
-                <div class="project-thumbnail">
-                    <span class="material-icons-outlined" style="font-size: 48px;">grid_view</span>
-                    <span class="badge">Storyboard</span>
-                </div>
-                <div class="project-info">
-                    <div class="project-name">History Storyboard & Audio</div>
-                    <div class="project-meta">
-                        <span class="material-icons-outlined" style="font-size: 16px;">folder</span> Google Drive
-                    </div>
+                    <div class="project-name">Character Rig Layer Design</div>
+                    <div class="project-meta">8.5x11 PNG • Modified 10 mins ago</div>
                 </div>
             </div>
         </div>
-
     </main>
-
 </body>
 </html>
